@@ -2,6 +2,16 @@
 
 A mobile digital library for Kyrgyz literature. Browse, search, and read books in Kyrgyz and Russian. Built with Expo and connected to a Java Spring Boot backend.
 
+<img width="499" height="1080" alt="image" src="https://github.com/user-attachments/assets/8109f3c0-8c41-43b0-b33f-ddd0a21acb38" />
+<img width="499" height="1080" alt="image" src="https://github.com/user-attachments/assets/e962cfa1-fd4f-4dd0-a4b1-24ef61be16ae" />
+<img width="499" height="1080" alt="image" src="https://github.com/user-attachments/assets/a8731879-6d04-4e0e-b22b-dd961c379ccb" />
+<img width="499" height="1080" alt="image" src="https://github.com/user-attachments/assets/d8ff7c6b-cfc7-4d19-b6ee-555fd170c732" />
+<img width="499" height="1080" alt="image" src="https://github.com/user-attachments/assets/35970c90-cfce-4d47-829a-5c0ae413a33f" />
+<img width="499" height="1080" alt="image" src="https://github.com/user-attachments/assets/7b2eb30f-853c-44dc-8525-f2fe14d2a9ba" />
+<img width="499" height="1080" alt="image" src="https://github.com/user-attachments/assets/449edcd2-ab8b-4365-80dd-d48499f4e2f9" />
+<img width="499" height="1080" alt="image" src="https://github.com/user-attachments/assets/debe84eb-46a9-4354-a983-2a520f965b9e" />
+<img width="499" height="1080" alt="image" src="https://github.com/user-attachments/assets/144a1278-8853-40df-85c3-71ba93ef8211" />
+
 ## Key Features
 - **Authentication**: Secure JWT-based auth via API with persistent SecureStore handling.
 - **Library**: Browse best collections, Kyrgyz classics, and browse personalized recommendations.
