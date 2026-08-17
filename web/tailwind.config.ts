@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss";
 import typography from "@tailwindcss/typography";
 
 const config: Config = {
-  darkMode: ["class", '[data-theme="dark"]'],
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -11,10 +11,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#FAFAFA",
-        surface: "#FFFFFF",
-        "surface-high": "#F3F4F6",
-        border: "#E5E7EB",
+        background: "var(--bg-primary)",
+        surface: "var(--bg-surface)",
+        "surface-high": "var(--bg-surface-high)",
+        border: "var(--border-color)",
         accent: {
           DEFAULT: "#E84326",
           light: "#FF5C3A",
@@ -34,9 +34,9 @@ const config: Config = {
           900: "#6B170A",
         },
         text: {
-          primary: "#1A1A2E",
-          secondary: "#6B7280",
-          muted: "#9CA3AF",
+          primary: "var(--text-primary)",
+          secondary: "var(--text-secondary)",
+          muted: "var(--text-muted)",
           onAccent: "#FFFFFF",
         },
         reader: {

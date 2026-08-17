@@ -12,6 +12,7 @@ import {
 import { WorkResponse, getCoverUrl } from "@/types";
 import { Badge } from "@/components/ui/Card";
 import { BookCard } from "@/components/books/BookCard";
+import { MOCK_BOOK_DETAILS } from "@/lib/mockData";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -25,10 +26,11 @@ async function getBook(id: string): Promise<WorkResponse | null> {
       next: { revalidate: 300 },
       signal: AbortSignal.timeout(1500),
     });
-    if (!res.ok) return null;
+    if (!res.ok) throw new Error("Not ok");
     return (await res.json()) as WorkResponse;
   } catch {
-    return null;
+    const numericId = Number(id);
+    return MOCK_BOOK_DETAILS[numericId] || MOCK_BOOK_DETAILS[1] || null;
   }
 }
 
