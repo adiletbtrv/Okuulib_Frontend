@@ -72,3 +72,12 @@ export const getAuthToken = async (): Promise<string | null> => {
         return null;
     }
 };
+
+export const getRefreshToken = async (): Promise<string | null> => {
+    try {
+        return await secureGet(REFRESH_TOKEN_KEY);
+    } catch (error) {
+        if (__DEV__) console.error('[TokenStorage] Error retrieving refresh token:', error);
+        return null;
+    }
+};

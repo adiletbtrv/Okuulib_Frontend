@@ -79,6 +79,19 @@ export default function Aitu() {
   const wsRef = useRef<ChatWebSocket | null>(null);
   const activeSessionIdRef = useRef<number | null>(null);
   const inputRef = useRef<TextInput>(null);
+  const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+        pollIntervalRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => { activeSessionIdRef.current = activeSessionId; }, [activeSessionId]);
 
@@ -137,7 +150,14 @@ export default function Aitu() {
     return ws;
   }, [onWsMessage, onWsStatus]);
 
-  useEffect(() => () => { wsRef.current?.disconnect(); wsRef.current = null; }, []);
+  useEffect(() => () => {
+    if (pollIntervalRef.current) {
+      clearInterval(pollIntervalRef.current);
+      pollIntervalRef.current = null;
+    }
+    wsRef.current?.disconnect();
+    wsRef.current = null;
+  }, []);
 
   // Sidebar
   const openSidebar = () => {
@@ -221,15 +241,41 @@ export default function Aitu() {
     const ws = getOrCreateWs();
     const trySend = () => {
       const sent = ws.send({ query: text, bookName: "", sessionId: targetId ?? 0 });
-      if (!sent) { setIsWaitingForAI(false); appendError(targetId); }
+      if (!sent) {
+        if (isMountedRef.current) {
+          setIsWaitingForAI(false);
+          appendError(targetId);
+        }
+      }
     };
-    if (ws.isConnected()) { trySend(); }
-    else {
+
+    if (pollIntervalRef.current) {
+      clearInterval(pollIntervalRef.current);
+      pollIntervalRef.current = null;
+    }
+
+    if (ws.isConnected()) {
+      trySend();
+    } else {
       let waited = 0;
-      const poll = setInterval(() => {
+      pollIntervalRef.current = setInterval(() => {
         waited += 200;
-        if (ws.isConnected()) { clearInterval(poll); trySend(); }
-        else if (waited >= 3000) { clearInterval(poll); setIsWaitingForAI(false); appendError(targetId); }
+        if (ws.isConnected()) {
+          if (pollIntervalRef.current) {
+            clearInterval(pollIntervalRef.current);
+            pollIntervalRef.current = null;
+          }
+          trySend();
+        } else if (waited >= 3000) {
+          if (pollIntervalRef.current) {
+            clearInterval(pollIntervalRef.current);
+            pollIntervalRef.current = null;
+          }
+          if (isMountedRef.current) {
+            setIsWaitingForAI(false);
+            appendError(targetId);
+          }
+        }
       }, 200);
     }
   };

@@ -1,7 +1,7 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError, GenericAbortSignal, InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 import { config } from './config';
-import { clearAuthToken, clearRefreshToken, setAuthToken } from './tokenStorage';
+import { clearAuthToken, clearRefreshToken, getRefreshToken, setAuthToken } from './tokenStorage';
 
 import type {
   AllWorksDTO,
@@ -98,7 +98,14 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await api.post<JWTResponse>('/api/auth/refresh-token');
+        const storedRefreshToken = await getRefreshToken();
+        const { data } = await api.post<JWTResponse>(
+          '/api/auth/refresh-token',
+          storedRefreshToken ? { refreshToken: storedRefreshToken } : undefined,
+          {
+            headers: storedRefreshToken ? { 'X-Refresh-Token': storedRefreshToken } : undefined,
+          }
+        );
         const newToken = data.accessToken;
 
         await setAuthToken(newToken);
@@ -127,6 +134,9 @@ api.interceptors.response.use(
     }
 
     if (!error.response) {
+      if (axios.isCancel(error)) {
+        return Promise.reject(error);
+      }
       console.error('[API] Network error:', error.message);
       return Promise.reject(new Error('Network error. Please check your connection.'));
     }
@@ -144,6 +154,7 @@ export {
   clearAuthToken,
   clearRefreshToken,
   getAuthToken,
+  getRefreshToken,
   setAuthToken,
   setRefreshToken
 } from './tokenStorage';
@@ -164,8 +175,15 @@ export const authApi = {
     return jwt;
   },
 
-  refreshToken: async (): Promise<JWTResponse> => {
-    const { data: jwt } = await api.post<JWTResponse>('/api/auth/refresh-token');
+  refreshToken: async (token?: string): Promise<JWTResponse> => {
+    const refreshToken = token ?? (await getRefreshToken());
+    const { data: jwt } = await api.post<JWTResponse>(
+      '/api/auth/refresh-token',
+      refreshToken ? { refreshToken } : undefined,
+      {
+        headers: refreshToken ? { 'X-Refresh-Token': refreshToken } : undefined,
+      }
+    );
     return jwt;
   },
 
@@ -212,10 +230,13 @@ export const worksApi = {
     return data;
   },
 
-  search: async (params: WorkSearchParams): Promise<PaginatedResponse<AllWorksDTO>> => {
+  search: async (
+    params: WorkSearchParams,
+    options?: { signal?: GenericAbortSignal }
+  ): Promise<PaginatedResponse<AllWorksDTO>> => {
     const { data } = await api.get<AllWorksDTO[] | PaginatedResponse<AllWorksDTO>>(
       '/api/works/search',
-      { params }
+      { params, signal: options?.signal }
     );
     if (Array.isArray(data)) {
       return {
