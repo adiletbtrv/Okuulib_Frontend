@@ -31,6 +31,7 @@
   ],
   "exclude": [
     "node_modules",
+    "web",
     "babel.config.js",
     "metro.config.js",
     "jest.config.js"
