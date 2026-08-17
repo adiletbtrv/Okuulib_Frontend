@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ChapterResponse, ChunkResponse } from "../../types";
 import { useReaderStore } from "../../store/useReaderStore";
 import { READER_THEMES } from "./ReaderThemes";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ReaderChunkViewProps {
-  chapter?: ChapterResponse;
+  chapter: ChapterResponse;
   chapterIdx: number;
   totalChapters: number;
   onPrevChapter: () => void;
@@ -23,8 +23,8 @@ export function ReaderChunkView({
   onNextChapter,
   coverUrl,
 }: ReaderChunkViewProps) {
-  const { theme, fontFamily, fontSize, lineHeight, maxWidth } = useReaderStore();
-  const activeTheme = READER_THEMES[theme];
+  const { theme, fontSize, lineHeight, fontFamily, maxWidth } = useReaderStore();
+  const activeTheme = READER_THEMES[theme] || READER_THEMES.light;
 
   const fontClass =
     fontFamily === "serif"
@@ -33,79 +33,75 @@ export function ReaderChunkView({
       ? "font-mono"
       : "font-sans";
 
-  const sortedChunks = [...(chapter?.chunks || [])].sort(
-    (a, b) => a.chunkNumber - b.chunkNumber
-  );
-
-  const isFirst = chapterIdx === 0;
-  const isLast = chapterIdx === totalChapters - 1;
+  const chunks = chapter?.chunks ? [...chapter.chunks].sort((a, b) => a.chunkNumber - b.chunkNumber) : [];
 
   return (
     <article
-      className={`mx-auto w-full px-6 py-12 transition-all ${maxWidth} ${fontClass}`}
-      style={{
-        fontSize: `${fontSize}px`,
-        lineHeight: lineHeight,
-        color: activeTheme.text,
-      }}
+      className={`mx-auto ${maxWidth} px-4 sm:px-8 py-10 sm:py-16 ${fontClass} transition-all duration-200`}
+      style={{ color: activeTheme.text }}
     >
-      {/* Chapter Eyebrow & Title */}
-      <div className="mb-10 text-center border-b pb-8" style={{ borderColor: activeTheme.border }}>
-        <p
-          className="text-xs font-bold uppercase tracking-widest mb-2"
+      {/* Chapter Title Banner */}
+      <header className="mb-12 text-center border-b pb-8" style={{ borderColor: activeTheme.border }}>
+        <span
+          className="text-xs font-bold uppercase tracking-widest"
           style={{ color: activeTheme.accent }}
         >
           {chapterIdx + 1}-бөлүм / {totalChapters}
-        </p>
-        <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-          {chapter?.chapterTitle || `Бөлүм ${chapterIdx + 1}`}
-        </h2>
-      </div>
+        </span>
+        <h1 className="mt-2 text-2xl sm:text-4xl font-extrabold tracking-tight">
+          {chapter.chapterTitle || `${chapterIdx + 1}-бөлүм`}
+        </h1>
+      </header>
 
-      {/* Chunks */}
-      <div className="space-y-6">
-        {sortedChunks.length > 0 ? (
-          sortedChunks.map((chunk: ChunkResponse) => (
-            <div key={chunk.chunkId} className="leading-relaxed">
-              {chunk.chunkType === "image" ? (
-                <div className="relative my-8 h-80 w-full overflow-hidden rounded-2xl bg-zinc-800 shadow-md">
-                  <Image
-                    src={chunk.text || coverUrl || "/images/default-cover.png"}
-                    alt={`Иллюстрация: ${chapter?.chapterTitle}`}
-                    fill
-                    className="object-cover"
-                    unoptimized
-                  />
-                </div>
-              ) : (
-                <div
-                  className="prose max-w-none transition-colors"
-                  style={{ color: activeTheme.text }}
-                  dangerouslySetInnerHTML={{ __html: chunk.text }}
-                />
-              )}
-            </div>
-          ))
+      {/* Chunks Stream */}
+      <div
+        className="space-y-6"
+        style={{
+          fontSize: `${fontSize}px`,
+          lineHeight: lineHeight,
+        }}
+      >
+        {chunks.length > 0 ? (
+          chunks.map((chunk: ChunkResponse) => {
+            if (chunk.chunkType === "image") {
+              return (
+                <figure key={chunk.chunkId || chunk.chunkNumber} className="my-8 overflow-hidden rounded-2xl">
+                  <div className="relative aspect-video w-full">
+                    <Image
+                      src={chunk.text}
+                      alt={`Иллюстрация: ${chapter.chapterTitle}`}
+                      fill
+                      className="object-contain"
+                      unoptimized
+                    />
+                  </div>
+                </figure>
+              );
+            }
+
+            // HTML / text content
+            return (
+              <div
+                key={chunk.chunkId || chunk.chunkNumber}
+                className="reader-content leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: chunk.text }}
+              />
+            );
+          })
         ) : (
-          <div className="py-16 text-center text-sm" style={{ color: activeTheme.muted }}>
-            Бул бөлүмдүн тексти азырынча жүктөлө элек.
+          <div className="py-12 text-center text-sm opacity-60">
+            Бул бөлүмдүн тексти азырынча толук эмес.
           </div>
         )}
       </div>
 
-      {/* Chapter Navigation Buttons */}
-      <div
-        className="mt-16 flex flex-col sm:flex-row items-center justify-between gap-4 border-t pt-8 pb-16"
-        style={{ borderColor: activeTheme.border }}
-      >
+      {/* Chapter Navigation Footer */}
+      <footer className="mt-16 flex items-center justify-between border-t pt-8" style={{ borderColor: activeTheme.border }}>
         <button
           onClick={onPrevChapter}
-          disabled={isFirst}
-          className={`flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl border px-6 py-3.5 text-sm font-semibold transition-all ${
-            isFirst ? "opacity-30 cursor-not-allowed" : "hover:opacity-80 active:scale-95"
-          }`}
+          disabled={chapterIdx === 0}
+          className="inline-flex items-center gap-1.5 rounded-2xl px-5 py-3 text-xs sm:text-sm font-bold border transition-all disabled:opacity-30 disabled:pointer-events-none hover:bg-black/5"
           style={{
-            backgroundColor: activeTheme.surface,
             borderColor: activeTheme.border,
             color: activeTheme.text,
           }}
@@ -114,12 +110,14 @@ export function ReaderChunkView({
           <span>Мурунку бөлүм</span>
         </button>
 
+        <span className="text-xs font-semibold opacity-60">
+          {chapterIdx + 1} / {totalChapters}
+        </span>
+
         <button
           onClick={onNextChapter}
-          disabled={isLast}
-          className={`flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-all ${
-            isLast ? "opacity-30 cursor-not-allowed" : "hover:opacity-90 active:scale-95 shadow-brand-500/20"
-          }`}
+          disabled={chapterIdx === totalChapters - 1}
+          className="inline-flex items-center gap-1.5 rounded-2xl px-5 py-3 text-xs sm:text-sm font-bold text-white transition-all disabled:opacity-30 disabled:pointer-events-none shadow-xs"
           style={{
             backgroundColor: activeTheme.accent,
           }}
@@ -127,7 +125,7 @@ export function ReaderChunkView({
           <span>Кийинки бөлүм</span>
           <ChevronRight className="h-4 w-4" />
         </button>
-      </div>
+      </footer>
     </article>
   );
 }

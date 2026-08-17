@@ -46,16 +46,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="rounded-3xl border border-zinc-800 bg-zinc-900/60 p-8 backdrop-blur-xl shadow-2xl space-y-6">
-      <div className="text-center space-y-2">
-        <h1 className="text-2xl font-bold text-white">Кабинетке кирүү</h1>
-        <p className="text-xs text-zinc-400">
-          Сакталган китептериңизге жана тарыхка жетүү үчүн кириңиз
+    <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-xl shadow-gray-200/50 space-y-6">
+      <div className="text-center space-y-1">
+        <h1 className="text-2xl font-extrabold text-[#1A1A2E]">Кайра кош келиңиз</h1>
+        <p className="text-xs text-[#6B7280]">
+          Окууну улантуу үчүн аккаунтуңузга кириңиз
         </p>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-400">
+        <div className="flex items-center gap-2 rounded-2xl border border-red-200 bg-red-50 p-3 text-xs text-red-600">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -63,11 +63,11 @@ export default function LoginPage() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-zinc-300">
+          <label className="text-xs font-bold text-[#1A1A2E]">
             Колдонуучу аты (Логин)
           </label>
           <div className="relative">
-            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               type="text"
               value={username}
@@ -80,11 +80,11 @@ export default function LoginPage() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-zinc-300">
+          <label className="text-xs font-bold text-[#1A1A2E]">
             Сырсөз
           </label>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               type="password"
               value={password}
@@ -107,9 +107,9 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <div className="text-center text-xs text-zinc-400 border-t border-zinc-800 pt-4">
+      <div className="text-center text-xs text-[#6B7280] border-t border-gray-100 pt-4">
         <span>Аккаунтуңуз жокпу? </span>
-        <Link href="/register" className="font-semibold text-brand-400 hover:underline">
+        <Link href="/register" className="font-bold text-[#E84326] hover:underline">
           Катталуу
         </Link>
       </div>

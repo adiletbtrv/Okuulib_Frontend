@@ -48,11 +48,11 @@ export default async function AuthorPage({ params }: Props) {
   const works = author.works || [];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-12">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-10">
       {/* Author Profile Banner */}
-      <div className="rounded-3xl border border-zinc-800 bg-zinc-900/60 p-6 sm:p-10 backdrop-blur-xl shadow-2xl">
+      <div className="rounded-3xl border border-gray-100 bg-white p-6 sm:p-10 shadow-sm">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          <div className="relative h-32 w-32 shrink-0 overflow-hidden rounded-full border-2 border-brand-500 bg-zinc-800 shadow-xl">
+          <div className="relative h-28 w-28 sm:h-32 sm:w-32 shrink-0 overflow-hidden rounded-full border-2 border-[#E84326] bg-gray-100 shadow-md">
             {author.profilePhotoUrl ? (
               <Image
                 src={author.profilePhotoUrl}
@@ -62,26 +62,26 @@ export default async function AuthorPage({ params }: Props) {
                 unoptimized
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-zinc-800 text-zinc-400">
-                <User className="h-16 w-16" />
+              <div className="flex h-full w-full items-center justify-center bg-gray-100 text-gray-400">
+                <User className="h-14 w-14" />
               </div>
             )}
           </div>
 
           <div className="space-y-3 text-center sm:text-left flex-1">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1A1A2E]">
               {author.name}
             </h1>
 
             {author.dateOfBirth && (
-              <div className="flex items-center justify-center sm:justify-start gap-2 text-xs text-zinc-400">
-                <Calendar className="h-4 w-4 text-brand-500" />
+              <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-semibold text-[#6B7280]">
+                <Calendar className="h-4 w-4 text-[#E84326]" />
                 <span>Туулган жылы: {author.dateOfBirth}</span>
               </div>
             )}
 
             {author.bio && (
-              <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-line max-w-3xl pt-2">
+              <p className="text-sm text-[#1A1A2E] leading-relaxed whitespace-pre-line max-w-3xl pt-1">
                 {author.bio}
               </p>
             )}
@@ -91,7 +91,7 @@ export default async function AuthorPage({ params }: Props) {
                 href={author.wiki}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1 text-xs font-semibold text-brand-400 hover:text-brand-300 hover:underline pt-2"
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#E84326] hover:underline pt-2"
               >
                 <span>Википедиядан кененирээк маалымат</span>
                 <ExternalLink className="h-3.5 w-3.5" />
@@ -102,13 +102,13 @@ export default async function AuthorPage({ params }: Props) {
       </div>
 
       {/* Author Works List */}
-      <section className="space-y-6">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-500">
+      <section className="space-y-4">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#E84326]">
           <BookOpen className="h-4 w-4" />
-          <span>Автордун чыгармалары</span>
+          <span>Автордун китептери</span>
         </div>
-        <h2 className="text-2xl font-bold text-white">
-          Жарыяланган китептери ({works.length})
+        <h2 className="text-xl sm:text-2xl font-extrabold text-[#1A1A2E]">
+          Жарыяланган чыгармалары ({works.length})
         </h2>
 
         {works.length > 0 ? (
@@ -117,19 +117,19 @@ export default async function AuthorPage({ params }: Props) {
               <Link
                 key={w.id}
                 href={`/books/${w.id}`}
-                className="group flex flex-col justify-between rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5 hover:border-zinc-700 hover:bg-zinc-800/40 transition-all shadow-md"
+                className="group flex flex-col justify-between rounded-2xl border border-gray-100 bg-white p-5 hover:border-gray-200 hover:shadow-md transition-all"
               >
                 <div>
-                  <h3 className="text-base font-bold text-white group-hover:text-brand-400 transition-colors">
+                  <h3 className="text-base font-bold text-[#1A1A2E] group-hover:text-[#E84326] transition-colors">
                     {w.title}
                   </h3>
                   {w.description && (
-                    <p className="mt-2 text-xs text-zinc-400 line-clamp-3 leading-relaxed">
+                    <p className="mt-2 text-xs text-[#6B7280] line-clamp-3 leading-relaxed">
                       {w.description}
                     </p>
                   )}
                 </div>
-                <div className="mt-4 flex items-center justify-between border-t border-zinc-800/80 pt-3 text-xs font-semibold text-brand-500">
+                <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3 text-xs font-bold text-[#E84326]">
                   <span>Окуу</span>
                   <BookOpen className="h-4 w-4" />
                 </div>
@@ -137,7 +137,7 @@ export default async function AuthorPage({ params }: Props) {
             ))}
           </div>
         ) : (
-          <div className="py-12 text-center text-zinc-500 text-sm">
+          <div className="py-12 text-center text-gray-400 text-sm">
             Бул автордун китептери азырынча жүктөлө элек.
           </div>
         )}

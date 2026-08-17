@@ -1,32 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
-  Settings2,
-  Maximize2,
-  Minimize2,
   Type,
   Bookmark,
   BookmarkCheck,
   ListOrdered,
-  ChevronLeft,
-  ChevronRight,
-  Sun,
-  Moon,
-  Sparkles,
+  Maximize2,
+  Minimize2,
+  X,
 } from "lucide-react";
-import { ChapterResponse, WorkResponse } from "../../types";
-import {
-  ReaderFontFamily,
-  ReaderMaxWidth,
-  ReaderThemeMode,
-  useReaderStore,
-} from "../../store/useReaderStore";
+import { WorkResponse, ChapterResponse } from "../../types";
+import { useReaderStore } from "../../store/useReaderStore";
 import { READER_THEMES } from "./ReaderThemes";
 import { useCreateBookmark } from "../../hooks/useBooks";
-import { useAuthStore } from "../../store/useAuthStore";
 
 interface ReaderControlsProps {
   book: WorkResponse;
@@ -43,364 +32,290 @@ export function ReaderControls({
 }: ReaderControlsProps) {
   const {
     theme,
-    fontFamily,
     fontSize,
     lineHeight,
-    maxWidth,
+    fontFamily,
     setTheme,
-    setFontFamily,
     setFontSize,
     setLineHeight,
-    setMaxWidth,
+    setFontFamily,
   } = useReaderStore();
 
-  const { isAuthenticated } = useAuthStore();
-  const createBookmarkMutation = useCreateBookmark();
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isTocOpen, setIsTocOpen] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showTOC, setShowTOC] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
-  const activeTheme = READER_THEMES[theme];
+  const createBookmarkMutation = useCreateBookmark();
+  const activeTheme = READER_THEMES[theme] || READER_THEMES.light;
+
   const chapters = book.chapters || [];
-  const currentChapter: ChapterResponse | undefined = chapters[currentChapterIdx];
+  const currentChapter = chapters[currentChapterIdx];
 
-  // Fullscreen toggle handler
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().then(() => setIsFullscreen(true));
+      document.documentElement.requestFullscreen();
+      setIsFullscreen(true);
     } else {
-      document.exitFullscreen().then(() => setIsFullscreen(false));
+      document.exitFullscreen();
+      setIsFullscreen(false);
     }
   };
 
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
-  }, []);
-
-  // Save Bookmark Handler
-  const handleSaveBookmark = () => {
-    if (!isAuthenticated) {
-      alert("Бетбелгини сактоо үчүн алгач аккаунтуңузга кириңиз.");
-      return;
-    }
-
-    createBookmarkMutation.mutate(
-      {
-        workId: book.workId,
-        chapterId: currentChapter?.chapterNumber || 1,
-        chunkId: currentChapter?.chunks?.[0]?.chunkId || 1,
-        startOffset: scrollPercent,
-        endOffset: scrollPercent,
-        userNote: `Окуу прогресси: ${scrollPercent}% (${currentChapter?.chapterTitle || "Бөлүм"})`,
-      },
-      {
-        onSuccess: () => {
-          setIsSaved(true);
-          setTimeout(() => setIsSaved(false), 3000);
-        },
-      }
-    );
+  const handleBookmark = () => {
+    if (!currentChapter) return;
+    const firstChunk = currentChapter.chunks?.[0];
+    createBookmarkMutation.mutate({
+      workId: book.workId,
+      chapterId: currentChapter.chapterNumber,
+      chunkId: firstChunk?.chunkId || 1,
+      startOffset: 0,
+      endOffset: 0,
+      userNote: `Бөлүм: ${currentChapter.chapterTitle || `${currentChapterIdx + 1}-бөлүм`} (${Math.round(scrollPercent)}%)`,
+    });
+    setIsBookmarked(true);
   };
 
   return (
     <>
+      {/* Top Floating Reader Bar */}
       <header
+        className="sticky top-0 z-40 flex h-14 items-center justify-between px-4 sm:px-6 shadow-xs border-b transition-colors duration-200 backdrop-blur-md"
         style={{
           backgroundColor: activeTheme.surface,
           borderColor: activeTheme.border,
           color: activeTheme.text,
         }}
-        className="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b px-4 shadow-sm transition-colors duration-200"
       >
-        {/* Left: Back & Book Title */}
+        {/* Left: Back & Title */}
         <div className="flex items-center gap-3 min-w-0">
           <Link
             href={`/books/${book.workId}`}
-            className="flex h-9 w-9 items-center justify-center rounded-xl border transition-opacity hover:opacity-80"
-            style={{ borderColor: activeTheme.border, backgroundColor: activeTheme.bg }}
+            className="flex h-9 w-9 items-center justify-center rounded-xl transition-colors hover:bg-black/5"
+            title="Артка"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-5 w-5" />
           </Link>
           <div className="min-w-0">
-            <h1 className="text-sm font-bold truncate tracking-tight">{book.title}</h1>
-            <p className="text-xs truncate" style={{ color: activeTheme.muted }}>
-              {currentChapter?.chapterTitle ?? `Бөлүм ${currentChapterIdx + 1}`} • {currentChapterIdx + 1} / {chapters.length}
+            <h1 className="text-sm font-bold truncate max-w-[160px] sm:max-w-xs md:max-w-md">
+              {book.title}
+            </h1>
+            <p className="text-[11px] truncate opacity-70">
+              {currentChapter?.chapterTitle || `${currentChapterIdx + 1}-бөлүм`}
             </p>
           </div>
         </div>
 
-        {/* Center: Chapter Prev/Next Quick Navigation */}
-        <div className="hidden md:flex items-center gap-1.5 rounded-xl border p-1" style={{ borderColor: activeTheme.border, backgroundColor: activeTheme.bg }}>
+        {/* Right Actions */}
+        <div className="flex items-center gap-1 sm:gap-2">
+          {/* TOC Trigger */}
           <button
-            onClick={() => onSelectChapter(Math.max(0, currentChapterIdx - 1))}
-            disabled={currentChapterIdx === 0}
-            className="flex h-8 w-8 items-center justify-center rounded-lg disabled:opacity-30 hover:opacity-80 transition-opacity"
+            onClick={() => setShowTOC(true)}
+            className="flex h-9 w-9 items-center justify-center rounded-xl transition-colors hover:bg-black/5"
+            title="Мазмуну"
           >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => setIsTocOpen(!isTocOpen)}
-            className="flex items-center gap-1.5 px-3 text-xs font-semibold"
-          >
-            <ListOrdered className="h-3.5 w-3.5" />
-            <span>Мазмуну</span>
-          </button>
-          <button
-            onClick={() => onSelectChapter(Math.min(chapters.length - 1, currentChapterIdx + 1))}
-            disabled={currentChapterIdx === chapters.length - 1}
-            className="flex h-8 w-8 items-center justify-center rounded-lg disabled:opacity-30 hover:opacity-80 transition-opacity"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-        </div>
-
-        {/* Right: Controls & Actions */}
-        <div className="flex items-center gap-2">
-          {/* Bookmark Button */}
-          <button
-            onClick={handleSaveBookmark}
-            title="Бетбелги сактоо"
-            className="flex h-9 w-9 items-center justify-center rounded-xl border transition-all"
-            style={{
-              borderColor: activeTheme.border,
-              backgroundColor: isSaved ? activeTheme.accent : activeTheme.bg,
-              color: isSaved ? "#FFFFFF" : activeTheme.text,
-            }}
-          >
-            {isSaved ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+            <ListOrdered className="h-4 w-4" />
           </button>
 
-          {/* Settings Trigger */}
+          {/* Typography Settings */}
           <button
-            onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-            title="Окуу параметрлери (шрифт, тема)"
-            className="flex h-9 w-9 items-center justify-center rounded-xl border transition-all hover:opacity-80"
-            style={{ borderColor: activeTheme.border, backgroundColor: activeTheme.bg }}
+            onClick={() => setShowSettings((p) => !p)}
+            className="flex h-9 w-9 items-center justify-center rounded-xl transition-colors hover:bg-black/5"
+            title="Шрифт жана темалар"
           >
-            <Settings2 className="h-4 w-4" />
+            <Type className="h-4 w-4" />
           </button>
 
-          {/* Fullscreen Toggle */}
+          {/* Bookmark */}
+          <button
+            onClick={handleBookmark}
+            className="flex h-9 w-9 items-center justify-center rounded-xl transition-colors hover:bg-black/5"
+            title="Кыстарма сактоо"
+          >
+            {isBookmarked ? (
+              <BookmarkCheck className="h-4 w-4 text-[#E84326]" />
+            ) : (
+              <Bookmark className="h-4 w-4" />
+            )}
+          </button>
+
+          {/* Fullscreen */}
           <button
             onClick={toggleFullscreen}
-            title={isFullscreen ? "Экрандан чыгуу" : "Толук экран"}
-            className="hidden sm:flex h-9 w-9 items-center justify-center rounded-xl border transition-all hover:opacity-80"
-            style={{ borderColor: activeTheme.border, backgroundColor: activeTheme.bg }}
+            className="hidden sm:flex h-9 w-9 items-center justify-center rounded-xl transition-colors hover:bg-black/5"
+            title="Толук экран"
           >
-            {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            {isFullscreen ? (
+              <Minimize2 className="h-4 w-4" />
+            ) : (
+              <Maximize2 className="h-4 w-4" />
+            )}
           </button>
         </div>
       </header>
 
-      {/* Settings Modal Drawer */}
-      {isSettingsOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-end p-4 pt-20">
+      {/* Settings Modal */}
+      {showSettings && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-end p-4 pt-16 backdrop-blur-xs bg-black/20 animate-in fade-in duration-150"
+          onClick={() => setShowSettings(false)}
+        >
           <div
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-            onClick={() => setIsSettingsOpen(false)}
-          />
-          <div
+            className="w-full max-w-sm rounded-3xl p-5 shadow-2xl space-y-5 border animate-in zoom-in-95 duration-150"
             style={{
               backgroundColor: activeTheme.surface,
               borderColor: activeTheme.border,
               color: activeTheme.text,
             }}
-            className="relative w-full max-w-sm rounded-2xl border p-5 shadow-2xl transition-all"
+            onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-4 border-b" style={{ borderColor: activeTheme.border }}>
-              <h3 className="text-sm font-bold flex items-center gap-2">
-                <Settings2 className="h-4 w-4" style={{ color: activeTheme.accent }} />
-                Окуу параметрлери
-              </h3>
-              <button
-                onClick={() => setIsSettingsOpen(false)}
-                className="text-xs font-semibold hover:opacity-70"
-              >
-                Жабуу
+            <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: activeTheme.border }}>
+              <h3 className="text-sm font-extrabold">Окуу параметрлери</h3>
+              <button onClick={() => setShowSettings(false)}>
+                <X className="h-4 w-4 opacity-70" />
               </button>
             </div>
 
-            <div className="space-y-5 pt-4 text-xs">
-              {/* Theme Selection */}
-              <div>
-                <label className="font-semibold block mb-2" style={{ color: activeTheme.muted }}>
-                  Түс палитрасы
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {(Object.keys(READER_THEMES) as ReaderThemeMode[]).map((t) => {
-                    const themeItem = READER_THEMES[t];
-                    const isSelected = theme === t;
-                    return (
-                      <button
-                        key={t}
-                        onClick={() => setTheme(t)}
-                        className={`flex items-center gap-2 rounded-xl border p-2.5 font-medium transition-all ${
-                          isSelected ? "ring-2 ring-brand-500 font-bold" : "opacity-80 hover:opacity-100"
-                        }`}
-                        style={{
-                          backgroundColor: themeItem.bg,
-                          color: themeItem.text,
-                          borderColor: themeItem.border,
-                        }}
-                      >
-                        <span
-                          className="h-3.5 w-3.5 rounded-full border"
-                          style={{ backgroundColor: themeItem.surface, borderColor: themeItem.border }}
-                        />
-                        <span>{themeItem.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Font Family */}
-              <div>
-                <label className="font-semibold block mb-2" style={{ color: activeTheme.muted }}>
-                  Шрифт түрү
-                </label>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {[
-                    { id: "sans", label: "Sans" },
-                    { id: "serif", label: "Serif" },
-                    { id: "mono", label: "Mono" },
-                  ].map((item) => (
+            {/* Themes */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider opacity-70">
+                Түс темасы
+              </label>
+              <div className="grid grid-cols-4 gap-2">
+                {Object.values(READER_THEMES).map((t) => {
+                  const isSelected = theme === t.name;
+                  return (
                     <button
-                      key={item.id}
-                      onClick={() => setFontFamily(item.id as ReaderFontFamily)}
-                      className={`rounded-lg border py-2 text-center font-medium transition-all ${
-                        fontFamily === item.id ? "border-brand-500 text-brand-500 font-bold" : ""
+                      key={t.name}
+                      onClick={() => setTheme(t.name as any)}
+                      className={`flex flex-col items-center justify-center rounded-2xl py-2.5 px-2 text-xs font-bold transition-all border ${
+                        isSelected
+                          ? "ring-2 ring-[#E84326] shadow-sm"
+                          : "opacity-80 hover:opacity-100"
                       }`}
                       style={{
-                        backgroundColor: activeTheme.bg,
-                        borderColor: fontFamily === item.id ? activeTheme.accent : activeTheme.border,
+                        backgroundColor: t.bg,
+                        color: t.text,
+                        borderColor: t.border,
                       }}
                     >
-                      {item.label}
+                      <span>{t.label}</span>
                     </button>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
+            </div>
 
-              {/* Font Size Slider */}
-              <div>
-                <div className="flex justify-between mb-1.5 font-semibold">
-                  <span style={{ color: activeTheme.muted }}>Шрифт өлчөмү</span>
-                  <span>{fontSize}px</span>
-                </div>
-                <input
-                  type="range"
-                  min={14}
-                  max={28}
-                  step={1}
-                  value={fontSize}
-                  onChange={(e) => setFontSize(Number(e.target.value))}
-                  className="w-full accent-brand-500 cursor-pointer"
-                />
+            {/* Font Family */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider opacity-70">
+                Шрифттин түрү
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { key: "sans", label: "Sans" },
+                  { key: "serif", label: "Serif" },
+                  { key: "mono", label: "Mono" },
+                ].map((f) => (
+                  <button
+                    key={f.key}
+                    onClick={() => setFontFamily(f.key as any)}
+                    className={`rounded-xl py-2 text-xs font-bold border transition-colors ${
+                      fontFamily === f.key
+                        ? "bg-[#E84326] text-white border-[#E84326]"
+                        : "border-gray-300 hover:bg-black/5"
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
               </div>
+            </div>
 
-              {/* Line Height Slider */}
-              <div>
-                <div className="flex justify-between mb-1.5 font-semibold">
-                  <span style={{ color: activeTheme.muted }}>Сап аралыгы</span>
-                  <span>{lineHeight.toFixed(2)}</span>
-                </div>
-                <input
-                  type="range"
-                  min={1.4}
-                  max={2.4}
-                  step={0.1}
-                  value={lineHeight}
-                  onChange={(e) => setLineHeight(Number(e.target.value))}
-                  className="w-full accent-brand-500 cursor-pointer"
-                />
+            {/* Font Size */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs font-bold opacity-70">
+                <span>Шрифт өлчөмү</span>
+                <span>{fontSize}px</span>
               </div>
+              <input
+                type="range"
+                min={14}
+                max={28}
+                step={1}
+                value={fontSize}
+                onChange={(e) => setFontSize(Number(e.target.value))}
+                className="w-full accent-[#E84326]"
+              />
+            </div>
 
-              {/* Column Width */}
-              <div>
-                <label className="font-semibold block mb-2" style={{ color: activeTheme.muted }}>
-                  Тексттин туурасы
-                </label>
-                <div className="grid grid-cols-4 gap-1">
-                  {[
-                    { id: "max-w-2xl", label: "Тар" },
-                    { id: "max-w-3xl", label: "Орто" },
-                    { id: "max-w-4xl", label: "Кең" },
-                    { id: "max-w-5xl", label: "Толук" },
-                  ].map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => setMaxWidth(item.id as ReaderMaxWidth)}
-                      className={`rounded-lg border py-1.5 text-center text-[11px] font-medium transition-all ${
-                        maxWidth === item.id ? "border-brand-500 text-brand-500 font-bold" : ""
-                      }`}
-                      style={{
-                        backgroundColor: activeTheme.bg,
-                        borderColor: maxWidth === item.id ? activeTheme.accent : activeTheme.border,
-                      }}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
+            {/* Line Height */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs font-bold opacity-70">
+                <span>Сап аралыгы</span>
+                <span>{lineHeight.toFixed(1)}x</span>
               </div>
+              <input
+                type="range"
+                min={1.4}
+                max={2.4}
+                step={0.1}
+                value={lineHeight}
+                onChange={(e) => setLineHeight(Number(e.target.value))}
+                className="w-full accent-[#E84326]"
+              />
             </div>
           </div>
         </div>
       )}
 
       {/* Table of Contents Drawer */}
-      {isTocOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-20">
+      {showTOC && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-start p-4 pt-16 backdrop-blur-xs bg-black/20 animate-in fade-in duration-150"
+          onClick={() => setShowTOC(false)}
+        >
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setIsTocOpen(false)}
-          />
-          <div
+            className="h-[80vh] w-full max-w-md rounded-3xl p-5 shadow-2xl flex flex-col border animate-in slide-in-from-left duration-150"
             style={{
               backgroundColor: activeTheme.surface,
               borderColor: activeTheme.border,
               color: activeTheme.text,
             }}
-            className="relative w-full max-w-md max-h-[70vh] flex flex-col rounded-2xl border p-5 shadow-2xl transition-all"
+            onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-3 border-b" style={{ borderColor: activeTheme.border }}>
-              <h3 className="text-sm font-bold flex items-center gap-2">
-                <ListOrdered className="h-4 w-4" style={{ color: activeTheme.accent }} />
-                Китептин мазмуну ({chapters.length} бөлүм)
-              </h3>
-              <button
-                onClick={() => setIsTocOpen(false)}
-                className="text-xs font-semibold hover:opacity-70"
-              >
-                Жабуу
+            <div className="flex items-center justify-between border-b pb-3 mb-3" style={{ borderColor: activeTheme.border }}>
+              <h3 className="text-sm font-extrabold">Китептин мазмуну ({chapters.length})</h3>
+              <button onClick={() => setShowTOC(false)}>
+                <X className="h-4 w-4 opacity-70" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-1.5 pt-3">
-              {chapters.map((ch, idx) => (
-                <button
-                  key={ch.chapterNumber}
-                  onClick={() => {
-                    onSelectChapter(idx);
-                    setIsTocOpen(false);
-                  }}
-                  className={`w-full flex items-center justify-between rounded-xl px-3.5 py-2.5 text-left text-xs font-medium transition-colors ${
-                    currentChapterIdx === idx
-                      ? "bg-brand-500/10 text-brand-500 font-bold border border-brand-500/20"
-                      : "hover:opacity-80"
-                  }`}
-                  style={{ backgroundColor: currentChapterIdx === idx ? undefined : activeTheme.bg }}
-                >
-                  <span className="truncate">{ch.chapterTitle || `Бөлүм ${idx + 1}`}</span>
-                  <span className="text-[10px] ml-2 opacity-60">№ {idx + 1}</span>
-                </button>
-              ))}
+            <div className="flex-1 overflow-y-auto space-y-1 pr-1">
+              {chapters.map((ch, idx) => {
+                const isCurrent = idx === currentChapterIdx;
+                return (
+                  <button
+                    key={ch.chapterNumber}
+                    onClick={() => {
+                      onSelectChapter(idx);
+                      setShowTOC(false);
+                    }}
+                    className={`w-full flex items-center justify-between rounded-xl px-3.5 py-2.5 text-left text-xs font-semibold transition-colors ${
+                      isCurrent
+                        ? "bg-[#E84326] text-white font-bold shadow-xs"
+                        : "hover:bg-black/5"
+                    }`}
+                  >
+                    <span className="truncate">
+                      {ch.chapterTitle || `${idx + 1}-бөлүм`}
+                    </span>
+                    <span className="text-[10px] opacity-70">
+                      {idx + 1}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

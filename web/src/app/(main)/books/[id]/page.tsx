@@ -6,15 +6,12 @@ import {
   BookOpen,
   User,
   ListOrdered,
-  Bookmark,
-  Share2,
   Sparkles,
-  ArrowRight,
   ChevronRight,
 } from "lucide-react";
 import { WorkResponse, getCoverUrl } from "@/types";
-import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Card";
+import { BookCard } from "@/components/books/BookCard";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -85,12 +82,12 @@ export default async function BookDetailPage({ params }: Props) {
   const coverUrl = getCoverUrl(book);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-12">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-10">
       {/* Book Header Card */}
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-12 rounded-3xl border border-zinc-800 bg-zinc-900/60 p-6 sm:p-10 backdrop-blur-xl shadow-2xl">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-12 rounded-3xl border border-gray-100 bg-white p-6 sm:p-10 shadow-sm">
         {/* Cover Column */}
         <div className="md:col-span-4 lg:col-span-3 flex flex-col items-center">
-          <div className="relative aspect-[2/3] w-56 md:w-full overflow-hidden rounded-2xl bg-zinc-800 shadow-2xl shadow-black/80 border border-zinc-700/50">
+          <div className="relative aspect-[2/3] w-48 sm:w-56 md:w-full overflow-hidden rounded-2xl bg-gray-100 shadow-xl border border-gray-100">
             <Image
               src={coverUrl}
               alt={book.title}
@@ -116,16 +113,16 @@ export default async function BookDetailPage({ params }: Props) {
               </div>
             )}
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1A1A2E] leading-tight">
               {book.title}
             </h1>
 
             {book.author && (
-              <div className="flex items-center gap-2 text-base text-zinc-300">
-                <User className="h-4 w-4 text-brand-500" />
+              <div className="flex items-center gap-2 text-sm sm:text-base text-[#6B7280]">
+                <User className="h-4 w-4 text-[#E84326]" />
                 <Link
                   href={`/authors/${book.author.id}`}
-                  className="font-semibold text-zinc-200 hover:text-brand-400 hover:underline transition-colors"
+                  className="font-bold text-[#1A1A2E] hover:text-[#E84326] transition-colors"
                 >
                   {book.author.name}
                 </Link>
@@ -133,11 +130,11 @@ export default async function BookDetailPage({ params }: Props) {
             )}
 
             {book.description && (
-              <div className="border-t border-zinc-800 pt-4">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+              <div className="border-t border-gray-100 pt-4">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#6B7280] mb-2">
                   Чыгарманын баяндамасы
                 </h3>
-                <p className="text-sm text-zinc-300 leading-relaxed max-w-3xl whitespace-pre-line">
+                <p className="text-sm text-[#1A1A2E] leading-relaxed max-w-3xl whitespace-pre-line font-normal">
                   {book.description}
                 </p>
               </div>
@@ -145,19 +142,19 @@ export default async function BookDetailPage({ params }: Props) {
           </div>
 
           {/* Actions CTA */}
-          <div className="flex flex-wrap items-center gap-3.5 border-t border-zinc-800 pt-6">
+          <div className="flex flex-wrap items-center gap-3.5 border-t border-gray-100 pt-6">
             <Link href={`/reader/${book.workId}`}>
-              <Button variant="primary" size="lg" className="gap-2 shadow-xl shadow-brand-500/25">
+              <button className="inline-flex items-center gap-2 rounded-2xl bg-[#E84326] px-6 py-3.5 text-sm font-extrabold text-white shadow-md shadow-brand-500/25 transition-all hover:bg-[#D63A20] active:scale-95">
                 <BookOpen className="h-5 w-5" />
                 <span>Окууну баштоо</span>
-              </Button>
+              </button>
             </Link>
 
             <Link href={`/aitu?book=${encodeURIComponent(book.title)}`}>
-              <Button variant="secondary" size="lg" className="gap-2 border-zinc-700">
-                <Sparkles className="h-5 w-5 text-brand-500" />
+              <button className="inline-flex items-center gap-2 rounded-2xl bg-white border border-gray-200 px-5 py-3.5 text-sm font-bold text-[#1A1A2E] hover:bg-gray-50 active:scale-95 transition-all">
+                <Sparkles className="h-4 w-4 text-[#E84326]" />
                 <span>Aitu менен талкуулоо</span>
-              </Button>
+              </button>
             </Link>
           </div>
         </div>
@@ -165,30 +162,30 @@ export default async function BookDetailPage({ params }: Props) {
 
       {/* Chapters (Table of Contents) */}
       <section className="space-y-4">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-500">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#E84326]">
           <ListOrdered className="h-4 w-4" />
           <span>Мазмуну жана бөлүмдөрү</span>
         </div>
-        <h2 className="text-2xl font-bold text-white">
+        <h2 className="text-xl sm:text-2xl font-extrabold text-[#1A1A2E]">
           Китептин бөлүмдөрү ({chapters.length})
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
           {chapters.map((ch, idx) => (
             <Link
               key={ch.chapterNumber}
               href={`/reader/${book.workId}?chapter=${idx}`}
-              className="group flex items-center justify-between rounded-2xl border border-zinc-800/80 bg-zinc-900/50 p-4 transition-all hover:border-zinc-700 hover:bg-zinc-800/60"
+              className="group flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-4 transition-all hover:border-gray-200 hover:shadow-xs"
             >
               <div className="flex items-center gap-3.5 min-w-0">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-zinc-800 text-xs font-bold text-zinc-300 group-hover:bg-brand-500 group-hover:text-white transition-colors">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#F3F4F6] text-xs font-bold text-[#1A1A2E] group-hover:bg-[#E84326] group-hover:text-white transition-colors">
                   {idx + 1}
                 </div>
-                <span className="text-sm font-semibold text-zinc-200 group-hover:text-white truncate">
+                <span className="text-sm font-bold text-[#1A1A2E] group-hover:text-[#E84326] truncate">
                   {ch.chapterTitle || `${idx + 1}-бөлүм`}
                 </span>
               </div>
-              <ChevronRight className="h-4 w-4 text-zinc-600 group-hover:text-brand-500 transition-colors" />
+              <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-[#E84326] transition-colors" />
             </Link>
           ))}
         </div>
@@ -196,30 +193,13 @@ export default async function BookDetailPage({ params }: Props) {
 
       {/* Other works by author */}
       {book.otherWorks && book.otherWorks.length > 0 && (
-        <section className="space-y-4 border-t border-zinc-800 pt-8">
-          <h2 className="text-xl font-bold text-white">
+        <section className="space-y-4 border-t border-gray-100 pt-8">
+          <h2 className="text-xl font-extrabold text-[#1A1A2E]">
             Автордун башка чыгармалары
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {book.otherWorks.map((other) => (
-              <Link
-                key={other.id}
-                href={`/books/${other.id}`}
-                className="group flex flex-col rounded-2xl border border-zinc-800 bg-zinc-900/40 p-3 hover:border-zinc-700 transition-all"
-              >
-                <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl bg-zinc-800 mb-2">
-                  <Image
-                    src={other.coverUrl || "/images/default-cover.png"}
-                    alt={other.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform"
-                    unoptimized
-                  />
-                </div>
-                <h4 className="text-xs font-bold text-zinc-200 group-hover:text-brand-400 truncate">
-                  {other.title}
-                </h4>
-              </Link>
+              <BookCard key={other.id} book={other as unknown as WorkResponse} />
             ))}
           </div>
         </section>

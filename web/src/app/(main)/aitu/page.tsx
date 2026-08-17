@@ -2,7 +2,7 @@
 
 import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Sparkles, Loader2, RefreshCw } from "lucide-react";
+import { Sparkles, Loader2 } from "lucide-react";
 import { useAituChat } from "@/hooks/useAituChat";
 import { ChatMessageList } from "@/components/aitu/ChatMessageList";
 import { ChatInput } from "@/components/aitu/ChatInput";
@@ -23,7 +23,7 @@ function AituChatContent() {
     createNewSession,
   } = useAituChat();
 
-  // If redirected with bookParam, prefill or send initial welcome
+  // If redirected with bookParam, prefill or send initial question
   useEffect(() => {
     if (bookParam && messages.length === 0) {
       sendMessage(`«${bookParam}» чыгармасынын негизги идеясы жана каармандары жөнүндө айтып бериңизчи.`, bookParam);
@@ -31,7 +31,7 @@ function AituChatContent() {
   }, [bookParam]);
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] w-full overflow-hidden bg-zinc-950">
+    <div className="flex h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#FAFAFA]">
       {/* Session History Sidebar (Desktop) */}
       <div className="hidden md:block">
         <SessionHistory
@@ -43,15 +43,15 @@ function AituChatContent() {
       </div>
 
       {/* Main Chat View */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex flex-1 flex-col overflow-hidden bg-[#FAFAFA]">
         {/* Top Header */}
-        <div className="flex h-14 items-center justify-between border-b border-zinc-800 bg-zinc-950 px-4 sm:px-6">
+        <div className="flex h-14 items-center justify-between border-b border-gray-200/80 bg-white px-4 sm:px-6 shadow-2xs">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-brand-600 to-brand-500 text-white shadow-md shadow-brand-500/20">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-tr from-[#D63A20] to-[#E84326] text-white shadow-xs">
               <Sparkles className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-white flex items-center gap-2">
+              <h2 className="text-sm font-extrabold text-[#1A1A2E] flex items-center gap-2">
                 Aitu AI Ассистент
                 <span
                   className={`h-2 w-2 rounded-full ${
@@ -67,9 +67,9 @@ function AituChatContent() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-zinc-400">
+          <div className="flex items-center gap-2 text-xs">
             {bookParam && (
-              <span className="rounded-md border border-brand-500/20 bg-brand-500/10 px-2 py-0.5 text-brand-400 font-medium">
+              <span className="rounded-full bg-[#E84326]/10 px-3 py-1 text-[#E84326] font-bold">
                 Контекст: {bookParam}
               </span>
             )}
@@ -80,7 +80,7 @@ function AituChatContent() {
         <ChatMessageList messages={messages} isWaiting={isWaiting} />
 
         {/* Input */}
-        <ChatInput onSendMessage={(msg) => sendMessage(msg, bookParam)} disabled={isWaiting} />
+        <ChatInput onSendMessage={(msg: string) => sendMessage(msg, bookParam)} disabled={isWaiting} />
       </div>
     </div>
   );
@@ -90,8 +90,8 @@ export default function AituPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-brand-500" />
+        <div className="flex h-[calc(100vh-4rem)] items-center justify-center bg-[#FAFAFA]">
+          <Loader2 className="h-8 w-8 animate-spin text-[#E84326]" />
         </div>
       }
     >

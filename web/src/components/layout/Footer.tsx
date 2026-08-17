@@ -1,95 +1,75 @@
 import Link from "next/link";
-import { BookOpen, Github, Heart, Sparkles } from "lucide-react";
+import { BookOpen, Heart, Sparkles } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t border-zinc-800/80 bg-zinc-950 text-zinc-400 transition-colors">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          {/* Brand Col */}
-          <div className="space-y-4 md:col-span-2">
+    <footer className="border-t border-gray-200/80 bg-white pt-12 pb-20 md:pb-12 text-[#6B7280]">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
+          {/* Brand Info */}
+          <div className="md:col-span-5 space-y-4">
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-white">
-                <BookOpen className="h-4 w-4" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#E84326] text-white shadow-sm">
+                <BookOpen className="h-5 w-5" />
               </div>
-              <span className="text-lg font-bold tracking-tight text-white">
-                Okuulib <span className="text-brand-500">.kg</span>
+              <span className="text-lg font-extrabold tracking-tight text-[#1A1A2E]">
+                Okuulib<span className="text-[#E84326]">.kg</span>
               </span>
             </Link>
-            <p className="max-w-md text-sm text-zinc-400 leading-relaxed">
-              Кыргыз элинин бай адабий мурасын, классикалык жана заманбап чыгармаларын
-              санариптештирүү жана жасалма интеллект аркылуу жеткиликтүү кылуу платформасы.
+            <p className="text-xs sm:text-sm text-gray-500 leading-relaxed max-w-sm">
+              Кыргыз адабиятынын алтын казынасы жана жасалма интеллект Aitu менен
+              интерактивдүү окуу тажрыйбасын сунуштаган заманбап санарип китепкана.
             </p>
-            <div className="flex items-center gap-2 text-xs text-zinc-500">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Spring Boot 3 + Next.js 15 + Aitu AI Engine</span>
-            </div>
           </div>
 
-          {/* Nav Col 1 */}
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-200 mb-3">
+          {/* Links */}
+          <div className="md:col-span-3 space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1A1A2E]">
               Бөлүмдөр
             </h4>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-xs font-medium">
               <li>
-                <Link href="/catalog" className="hover:text-white transition-colors">
-                  Бардык китептер
+                <Link href="/" className="hover:text-[#E84326] transition-colors">
+                  Башкы бет
                 </Link>
               </li>
               <li>
-                <Link href="/catalog?genre=1" className="hover:text-white transition-colors">
-                  Эпостор жана дастандар
+                <Link href="/catalog" className="hover:text-[#E84326] transition-colors">
+                  Китептер каталогу
                 </Link>
               </li>
               <li>
-                <Link href="/aitu" className="hover:text-white transition-colors flex items-center gap-1.5 text-brand-400">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Aitu AI жардамчысы
+                <Link href="/aitu" className="hover:text-[#E84326] transition-colors">
+                  Aitu AI Ассистент
                 </Link>
               </li>
               <li>
-                <Link href="/bookmarks" className="hover:text-white transition-colors">
-                  Менин сакталгандарым
+                <Link href="/bookmarks" className="hover:text-[#E84326] transition-colors">
+                  Сакталган бетбелгилер
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Legal / Social */}
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-200 mb-3">
-              Маалымат
+          {/* Info */}
+          <div className="md:col-span-4 space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1A1A2E]">
+              Долбоор тууралуу
             </h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <span className="text-zinc-500">Версия: v1.2 Production</span>
-              </li>
-              <li>
-                <a
-                  href="https://github.com/adiletbtrv/Okuulib_Frontend"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-1.5 hover:text-white transition-colors"
-                >
-                  <Github className="h-4 w-4" />
-                  GitHub Repository
-                </a>
-              </li>
-              <li>
-                <span className="text-xs text-zinc-500">
-                  Бардык укуктар корголгон © {new Date().getFullYear()}
-                </span>
-              </li>
-            </ul>
+            <p className="text-xs text-gray-500 leading-relaxed">
+              Платформа кыргыз тилин жана маданиятын санариптештирүү,
+              жаш муундарга жеткиликтүү жана ыңгайлуу окуу чөйрөсүн түзүү максатында
+              иштелип чыккан.
+            </p>
           </div>
         </div>
 
-        <div className="mt-12 border-t border-zinc-800/80 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 gap-4">
-          <p>© {new Date().getFullYear()} Okuulib. Кыргыз Республикасы.</p>
-          <p className="flex items-center gap-1">
-            Кыргыз тили жана маданияты үчүн <Heart className="h-3.5 w-3.5 text-red-500 fill-red-500 inline" /> менен жасалды.
-          </p>
+        <div className="mt-12 border-t border-gray-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
+          <p>© {new Date().getFullYear()} Okuulib.kg. Бардык укуктар корголгон.</p>
+          <div className="flex items-center gap-1">
+            <span>Кыргыз адабияты үчүн сүйүү менен</span>
+            <Heart className="h-3.5 w-3.5 text-[#E84326] fill-[#E84326]" />
+          </div>
         </div>
       </div>
     </footer>

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Sparkles, User, Copy, Check, BookOpen } from "lucide-react";
+import { User, Sparkles, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { ChatMessage } from "../../types";
 
@@ -20,26 +20,28 @@ export function ChatMessageList({ messages, isWaiting }: ChatMessageListProps) {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isWaiting]);
 
-  const copyToClipboard = (id: number, text: string) => {
+  const handleCopy = (text: string, id: number) => {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+    <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 bg-[#FAFAFA]">
       {messages.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand-600 to-brand-500 shadow-xl shadow-brand-500/20 mb-4">
-            <Sparkles className="h-8 w-8 text-white" />
+        <div className="flex h-full flex-col items-center justify-center text-center max-w-md mx-auto space-y-4 pt-12">
+          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-tr from-[#D63A20] to-[#E84326] text-white shadow-brand">
+            <Sparkles className="h-8 w-8" />
           </div>
-          <h3 className="text-lg font-bold text-white mb-2">
-            Aitu AI адабий жардамчысы
-          </h3>
-          <p className="max-w-md text-sm text-zinc-400 leading-relaxed">
-            Кыргыз адабияты, эпостор, Чыңгыз Айтматовдун чыгармалары, каармандардын
-            талдоосу жана тарыхый контекст боюнча каалаган сурооңузду бериңиз.
-          </p>
+          <div>
+            <h3 className="text-xl font-extrabold text-[#1A1A2E]">
+              Aitu AI жардамчысына кош келиңиз!
+            </h3>
+            <p className="text-xs sm:text-sm text-[#6B7280] mt-1 leading-relaxed">
+              Кыргыз адабияты, эпостор, Чыңгыз Айтматовдун чыгармалары же каармандардын
+              талдоосу боюнча каалаган сурооңузду бериңиз.
+            </p>
+          </div>
         </div>
       )}
 
@@ -48,76 +50,74 @@ export function ChatMessageList({ messages, isWaiting }: ChatMessageListProps) {
         return (
           <div
             key={msg.id}
-            className={`flex gap-3 sm:gap-4 ${
-              isUser ? "justify-end" : "justify-start"
+            className={`flex items-start gap-3 ${
+              isUser ? "flex-row-reverse" : "flex-row"
             }`}
           >
-            {!isUser && (
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 text-white shadow-md shadow-brand-500/20 mt-0.5">
-                <Sparkles className="h-4 w-4" />
-              </div>
-            )}
-
+            {/* Avatar */}
             <div
-              className={`relative max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-3.5 text-sm shadow-md ${
+              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold shadow-xs ${
                 isUser
-                  ? "bg-brand-500 text-white rounded-br-none"
-                  : "border border-zinc-800 bg-zinc-900/90 text-zinc-100 rounded-bl-none"
+                  ? "bg-[#1A1A2E] text-white"
+                  : "bg-[#E84326] text-white"
+              }`}
+            >
+              {isUser ? <User className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
+            </div>
+
+            {/* Bubble */}
+            <div
+              className={`relative max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 text-sm leading-relaxed shadow-xs ${
+                isUser
+                  ? "bg-[#E84326] text-white rounded-tr-xs"
+                  : "bg-white text-[#1A1A2E] border border-gray-100 rounded-tl-xs"
               }`}
             >
               {isUser ? (
-                <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                <p className="whitespace-pre-wrap">{msg.content}</p>
               ) : (
-                <div className="prose prose-invert prose-sm max-w-none leading-relaxed">
+                <div className="prose prose-sm max-w-none text-[#1A1A2E] prose-p:leading-relaxed prose-headings:text-[#1A1A2E] prose-strong:text-[#1A1A2E] prose-code:text-[#E84326]">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {msg.content}
                   </ReactMarkdown>
                 </div>
               )}
 
-              {!isUser && (
-                <div className="mt-2 flex items-center justify-end border-t border-zinc-800/80 pt-2">
-                  <button
-                    onClick={() => copyToClipboard(msg.id, msg.content)}
-                    className="flex items-center gap-1 text-[11px] text-zinc-400 hover:text-zinc-200 transition-colors"
-                  >
-                    {copiedId === msg.id ? (
-                      <>
-                        <Check className="h-3 w-3 text-emerald-400" />
-                        <span className="text-emerald-400">Көчүрүлдү</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-3 w-3" />
-                        <span>Көчүрүү</span>
-                      </>
-                    )}
-                  </button>
-                </div>
+              {/* Copy Button for Assistant */}
+              {!isUser && msg.content && (
+                <button
+                  onClick={() => handleCopy(msg.content, msg.id)}
+                  title="Көчүрүү"
+                  className="mt-2.5 flex items-center gap-1 text-[11px] font-semibold text-[#6B7280] hover:text-[#E84326] transition-colors"
+                >
+                  {copiedId === msg.id ? (
+                    <>
+                      <Check className="h-3.5 w-3.5 text-emerald-600" />
+                      <span className="text-emerald-600">Көчүрүлдү</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-3.5 w-3.5" />
+                      <span>Көчүрүү</span>
+                    </>
+                  )}
+                </button>
               )}
             </div>
-
-            {isUser && (
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-zinc-800 text-zinc-300 mt-0.5">
-                <User className="h-4 w-4" />
-              </div>
-            )}
           </div>
         );
       })}
 
+      {/* Typing Indicator */}
       {isWaiting && (
-        <div className="flex gap-3 sm:gap-4 justify-start">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-white shadow-md shadow-brand-500/20">
-            <Sparkles className="h-4 w-4 animate-pulse" />
+        <div className="flex items-start gap-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#E84326] text-white">
+            <Sparkles className="h-4 w-4" />
           </div>
-          <div className="rounded-2xl rounded-bl-none border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-zinc-400 flex items-center gap-2">
-            <div className="flex gap-1">
-              <span className="h-2 w-2 rounded-full bg-brand-500 animate-bounce" />
-              <span className="h-2 w-2 rounded-full bg-brand-500 animate-bounce [animation-delay:0.2s]" />
-              <span className="h-2 w-2 rounded-full bg-brand-500 animate-bounce [animation-delay:0.4s]" />
-            </div>
-            <span>Aitu ойлонуп жатат…</span>
+          <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-xs border border-gray-100 bg-white px-4 py-3.5 shadow-xs">
+            <span className="h-2 w-2 rounded-full bg-[#E84326] animate-bounce [animation-delay:-0.3s]" />
+            <span className="h-2 w-2 rounded-full bg-[#E84326] animate-bounce [animation-delay:-0.15s]" />
+            <span className="h-2 w-2 rounded-full bg-[#E84326] animate-bounce" />
           </div>
         </div>
       )}

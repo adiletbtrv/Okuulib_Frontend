@@ -1,55 +1,53 @@
-import { ReaderThemeMode } from "../../store/useReaderStore";
-
-export interface ThemeConfig {
+export interface ReaderThemeConfig {
   name: string;
   label: string;
   bg: string;
-  text: string;
   surface: string;
-  border: string;
+  text: string;
   muted: string;
+  border: string;
   accent: string;
 }
 
-export const READER_THEMES: Record<ReaderThemeMode, ThemeConfig> = {
+export const READER_THEMES: Record<string, ReaderThemeConfig> = {
   light: {
     name: "light",
-    label: "Ак (Light)",
+    label: "Жарык",
     bg: "#FAFAFA",
-    text: "#18181B",
     surface: "#FFFFFF",
-    border: "#E4E4E7",
-    muted: "#71717A",
-    accent: "#E8341A",
+    text: "#1A1A2E",
+    muted: "#6B7280",
+    border: "#E5E7EB",
+    accent: "#E84326",
   },
   sepia: {
     name: "sepia",
-    label: "Пергамент (Sepia)",
+    label: "Сепия",
     bg: "#FBF0D9",
+    surface: "#F3E5C8",
     text: "#433422",
-    surface: "#F4E5C4",
-    border: "#E2CFAB",
-    muted: "#7C6346",
-    accent: "#B8200A",
+    muted: "#8C7355",
+    border: "#EAD7B2",
+    accent: "#C46D28",
   },
   dark: {
     name: "dark",
-    label: "Түнкү (Slate)",
+    label: "Караңгы",
     bg: "#111620",
+    surface: "#1A202C",
     text: "#E2E8F0",
-    surface: "#1A212E",
-    border: "#2A3446",
     muted: "#94A3B8",
-    accent: "#E8341A",
+    border: "#2D3748",
+    accent: "#FF5C3A",
   },
   oled: {
     name: "oled",
-    label: "OLED Кара (Black)",
+    label: "OLED",
     bg: "#000000",
-    text: "#D4D4D8",
-    surface: "#0A0A0A",
-    border: "#202020",
+    surface: "#121212",
+    text: "#FFFFFF",
     muted: "#71717A",
-    accent: "#E8341A",
+    border: "#27272A",
+    accent: "#E84326",
   },
 };

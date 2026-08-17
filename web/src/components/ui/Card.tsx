@@ -1,60 +1,53 @@
 import React from "react";
 import { cn } from "../../lib/utils";
 
-export const Card = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-2xl border border-zinc-800/80 bg-zinc-900/60 p-6 backdrop-blur-xl shadow-xl transition-all duration-200 hover:border-zinc-700/80",
-      className
-    )}
-    {...props}
-  />
-));
-Card.displayName = "Card";
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  hoverable?: boolean;
+}
 
-export const Badge = ({
-  children,
+export function Card({ className, hoverable = false, children, ...props }: CardProps) {
+  return (
+    <div
+      className={cn(
+        "rounded-2xl border border-gray-100 bg-white p-5 shadow-xs",
+        hoverable &&
+          "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-gray-200",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+  variant?: "brand" | "secondary" | "outline" | "success";
+}
+
+export function Badge({
   className,
-  variant = "default",
-}: {
-  children: React.ReactNode;
-  className?: string;
-  variant?: "default" | "brand" | "outline";
-}) => {
-  const variantStyles = {
-    default: "bg-zinc-800 text-zinc-300 border-zinc-700",
-    brand: "bg-brand-500/10 text-brand-500 border-brand-500/20",
-    outline: "border-zinc-700 text-zinc-400",
+  variant = "secondary",
+  children,
+  ...props
+}: BadgeProps) {
+  const variants = {
+    brand: "bg-[#E84326]/10 text-[#E84326] border border-[#E84326]/20 font-semibold",
+    secondary: "bg-gray-100 text-gray-700 font-medium",
+    outline: "border border-gray-200 text-gray-600 font-medium",
+    success: "bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold",
   };
 
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold tracking-wide transition-colors",
-        variantStyles[variant],
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs",
+        variants[variant],
         className
       )}
+      {...props}
     >
       {children}
     </span>
   );
-};
-
-export const Input = React.forwardRef<
-  HTMLInputElement,
-  React.InputHTMLAttributes<HTMLInputElement>
->(({ className, ...props }, ref) => (
-  <input
-    ref={ref}
-    className={cn(
-      "flex h-11 w-full rounded-xl border border-zinc-800 bg-zinc-900/80 px-4 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 transition-all focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 disabled:cursor-not-allowed disabled:opacity-50",
-      className
-    )}
-    {...props}
-  />
-));
-Input.displayName = "Input";
+}
