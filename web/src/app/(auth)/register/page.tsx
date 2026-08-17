@@ -4,10 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { UserPlus, Lock, Mail, User, AlertCircle } from "lucide-react";
-import { authApi } from "@/lib/api";
-import { useAuthStore } from "@/store/useAuthStore";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { authApi } from "../../../lib/api";
+import { useAuthStore } from "../../../store/useAuthStore";
+import { Button } from "../../../components/ui/Button";
+import { Input } from "../../../components/ui/Input";
 
 export default function RegisterPage() {
   const router = useRouter();
