@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { BookOpen } from "lucide-react";
+import { useLanguageStore } from "../../store/useLanguageStore";
 
 interface PosterBannerProps {
   title: string;
@@ -17,6 +18,8 @@ export function PosterBanner({
   image,
   link,
 }: PosterBannerProps) {
+  const { t } = useLanguageStore();
+
   return (
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#E84326] to-[#D63A20] p-6 sm:p-8 lg:p-10 shadow-lg text-white transition-all duration-300 hover:shadow-brand">
       {/* Subtle Background Pattern */}
@@ -27,7 +30,7 @@ export function PosterBanner({
         <div className="md:col-span-8 space-y-4">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white backdrop-blur-xs">
             <BookOpen className="h-3.5 w-3.5" />
-            <span>Башкы сунушталган чыгарма</span>
+            <span>{t.home.heroBadge}</span>
           </div>
 
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight">
@@ -41,7 +44,7 @@ export function PosterBanner({
           <div className="pt-2">
             <Link href={link}>
               <button className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-extrabold text-[#E84326] shadow-md transition-all duration-150 hover:bg-white/90 hover:shadow-lg active:scale-95">
-                <span>Окууну баштоо</span>
+                <span>{t.home.startReading}</span>
               </button>
             </Link>
           </div>

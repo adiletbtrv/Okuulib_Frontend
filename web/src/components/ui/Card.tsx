@@ -9,9 +9,9 @@ export function Card({ className, hoverable = false, children, ...props }: CardP
   return (
     <div
       className={cn(
-        "rounded-2xl border border-gray-100 bg-white p-5 shadow-xs",
+        "rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 shadow-xs transition-colors duration-150",
         hoverable &&
-          "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-gray-200",
+          "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-gray-200 dark:hover:border-gray-700",
         className
       )}
       {...props}
@@ -33,9 +33,9 @@ export function Badge({
 }: BadgeProps) {
   const variants = {
     brand: "bg-[#E84326]/10 text-[#E84326] border border-[#E84326]/20 font-semibold",
-    secondary: "bg-gray-100 text-gray-700 font-medium",
-    outline: "border border-gray-200 text-gray-600 font-medium",
-    success: "bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold",
+    secondary: "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium",
+    outline: "border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-medium",
+    success: "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 font-semibold",
   };
 
   return (

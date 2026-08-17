@@ -14,7 +14,8 @@ const BACKEND_URL = process.env.BACKEND_API_URL || "http://localhost:8082";
 async function getAuthor(id: string): Promise<AuthorFullResponse | null> {
   try {
     const res = await fetch(`${BACKEND_URL}/api/authors/${id}`, {
-      next: { revalidate: 600 },
+      next: { revalidate: 300 },
+      signal: AbortSignal.timeout(1500),
     });
     if (!res.ok) return null;
     return (await res.json()) as AuthorFullResponse;

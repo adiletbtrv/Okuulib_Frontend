@@ -4,13 +4,33 @@
 
 @layer base {
   :root {
-    --font-inter: 'Inter', sans-serif;
-    --font-merriweather: 'Merriweather', serif;
+    --bg-primary: #FAFAFA;
+    --bg-surface: #FFFFFF;
+    --bg-surface-high: #F3F4F6;
+    --text-primary: #1A1A2E;
+    --text-secondary: #6B7280;
+    --text-muted: #9CA3AF;
+    --border-color: #E5E7EB;
+    --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-merriweather: 'Merriweather', Georgia, serif;
     --font-jetbrains: 'JetBrains Mono', monospace;
   }
 
+  [data-theme="dark"],
+  .dark {
+    --bg-primary: #0F1218;
+    --bg-surface: #171C26;
+    --bg-surface-high: #212735;
+    --text-primary: #F3F4F6;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    --border-color: #272F3D;
+  }
+
   body {
-    @apply bg-[#FAFAFA] text-[#1A1A2E] antialiased selection:bg-[#E84326] selection:text-white min-h-screen;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    @apply antialiased selection:bg-[#E84326] selection:text-white min-h-screen transition-colors duration-150;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
@@ -28,6 +48,10 @@
 ::-webkit-scrollbar-thumb {
   background: #D1D5DB;
   border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
 }
 
 ::-webkit-scrollbar-thumb:hover {

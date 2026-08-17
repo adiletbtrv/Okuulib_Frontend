@@ -4,12 +4,14 @@ import { useState, useTransition, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Search, Loader2, BookOpen } from "lucide-react";
 import { useGenres, useWorks } from "@/hooks/useBooks";
+import { useLanguageStore } from "@/store/useLanguageStore";
 import { BookCard } from "@/components/books/BookCard";
 
 function CatalogContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const { t } = useLanguageStore();
 
   const selectedGenre = searchParams.get("genre") ? Number(searchParams.get("genre")) : null;
   const initialQuery = searchParams.get("q") || "";
@@ -52,11 +54,11 @@ function CatalogContent() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#1A1A2E]">
-          Китептер каталогу
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#1A1A2E] dark:text-white">
+          {t.catalog.title}
         </h1>
-        <p className="mt-1 text-xs sm:text-sm text-[#6B7280]">
-          Кыргыз адабиятынын классикалык жана заманбап чыгармаларын табыңыз.
+        <p className="mt-1 text-xs sm:text-sm text-[#6B7280] dark:text-gray-400">
+          {t.catalog.subtitle}
         </p>
       </div>
 
@@ -67,8 +69,8 @@ function CatalogContent() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Китептин же автордун аты боюнча издөө…"
-          className="w-full rounded-2xl border border-gray-200 bg-white pl-11 pr-4 py-3 text-sm text-[#1A1A2E] placeholder:text-gray-400 shadow-xs focus:border-[#E84326] focus:outline-none focus:ring-2 focus:ring-[#E84326]/20 transition-all"
+          placeholder={t.catalog.searchPlaceholder}
+          className="w-full rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 pl-11 pr-4 py-3 text-sm text-[#1A1A2E] dark:text-white placeholder:text-gray-400 shadow-xs focus:border-[#E84326] focus:outline-none focus:ring-2 focus:ring-[#E84326]/20 transition-all"
         />
       </div>
 
@@ -80,10 +82,10 @@ function CatalogContent() {
             className={`rounded-full px-4 py-1.5 text-xs font-bold shrink-0 transition-all ${
               selectedGenre === null
                 ? "bg-[#E84326] text-white shadow-sm shadow-brand-500/20"
-                : "border border-gray-200 bg-white text-[#6B7280] hover:text-[#1A1A2E] hover:border-gray-300"
+                : "border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#6B7280] dark:text-gray-300 hover:text-[#1A1A2E] dark:hover:text-white hover:border-gray-300"
             }`}
           >
-            Бардыгы
+            {t.catalog.allGenres}
           </button>
           {genres.map((g) => {
             const isSelected = selectedGenre === g.id;
@@ -94,7 +96,7 @@ function CatalogContent() {
                 className={`rounded-full px-4 py-1.5 text-xs font-bold shrink-0 transition-all ${
                   isSelected
                     ? "bg-[#E84326] text-white shadow-sm shadow-brand-500/20"
-                    : "border border-gray-200 bg-white text-[#6B7280] hover:text-[#1A1A2E] hover:border-gray-300"
+                    : "border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#6B7280] dark:text-gray-300 hover:text-[#1A1A2E] dark:hover:text-white hover:border-gray-300"
                 }`}
               >
                 {g.name}
@@ -110,7 +112,7 @@ function CatalogContent() {
           {[...Array(12)].map((_, i) => (
             <div
               key={i}
-              className="aspect-[2/3] animate-pulse rounded-xl bg-gray-200"
+              className="aspect-[2/3] animate-pulse rounded-xl bg-gray-200 dark:bg-gray-800"
             />
           ))}
         </div>
@@ -122,10 +124,10 @@ function CatalogContent() {
         </div>
       ) : (
         <div className="py-20 text-center text-gray-400">
-          <BookOpen className="mx-auto h-12 w-12 text-gray-300 mb-3" />
-          <p className="text-base font-bold text-[#1A1A2E]">Китептер табылган жок</p>
-          <p className="text-xs text-gray-500 mt-1">
-            Издөө сөзүн же жанр чыпкасын өзгөртүп көрүңүз.
+          <BookOpen className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600 mb-3" />
+          <p className="text-base font-bold text-[#1A1A2E] dark:text-white">{t.catalog.noBooksFound}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            {t.catalog.noBooksHint}
           </p>
         </div>
       )}

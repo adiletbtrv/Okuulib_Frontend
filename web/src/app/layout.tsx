@@ -74,17 +74,35 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {/* Anti-FOUC script for reader theme pre-hydration */}
+        {/* Anti-FOUC script for theme and language pre-hydration */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  var prefs = localStorage.getItem('okuulib_reader_prefs_v1');
-                  if (prefs) {
-                    var parsed = JSON.parse(prefs);
-                    if (parsed && parsed.state && parsed.state.theme) {
-                      document.documentElement.setAttribute('data-reader-theme', parsed.state.theme);
+                  // Theme hydration
+                  var themeData = localStorage.getItem('okuulib_theme_v1');
+                  if (themeData) {
+                    var parsed = JSON.parse(themeData);
+                    var t = parsed && parsed.state ? parsed.state.theme : 'light';
+                    var active = t;
+                    if (t === 'system') {
+                      active = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    }
+                    if (active === 'dark') {
+                      document.documentElement.classList.add('dark');
+                      document.documentElement.setAttribute('data-theme', 'dark');
+                    } else {
+                      document.documentElement.classList.remove('dark');
+                      document.documentElement.setAttribute('data-theme', 'light');
+                    }
+                  }
+                  // Language hydration
+                  var langData = localStorage.getItem('okuulib_language_v1');
+                  if (langData) {
+                    var parsedLang = JSON.parse(langData);
+                    if (parsedLang && parsedLang.state && parsedLang.state.language) {
+                      document.documentElement.lang = parsedLang.state.language;
                     }
                   }
                 } catch (e) {}
@@ -93,7 +111,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans">
+      <body className="min-h-screen flex flex-col font-sans transition-colors duration-150">
         <Providers>{children}</Providers>
       </body>
     </html>

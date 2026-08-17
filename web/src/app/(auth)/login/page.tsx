@@ -6,12 +6,14 @@ import { useRouter } from "next/navigation";
 import { LogIn, Lock, User, AlertCircle } from "lucide-react";
 import { authApi } from "../../../lib/api";
 import { useAuthStore } from "../../../store/useAuthStore";
+import { useLanguageStore } from "../../../store/useLanguageStore";
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
 
 export default function LoginPage() {
   const router = useRouter();
   const login = useAuthStore((s) => s.login);
+  const { t } = useLanguageStore();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +23,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username.trim() || !password.trim()) {
-      setError("Логин жана сырсөздү киргизиңиз.");
+      setError(t.auth.fillAllFields);
       return;
     }
 
@@ -46,16 +48,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-xl shadow-gray-200/50 space-y-6">
+    <div className="rounded-3xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-8 shadow-xl shadow-gray-200/50 dark:shadow-none space-y-6">
       <div className="text-center space-y-1">
-        <h1 className="text-2xl font-extrabold text-[#1A1A2E]">Кайра кош келиңиз</h1>
-        <p className="text-xs text-[#6B7280]">
-          Окууну улантуу үчүн аккаунтуңузга кириңиз
+        <h1 className="text-2xl font-extrabold text-[#1A1A2E] dark:text-white">{t.auth.welcomeBack}</h1>
+        <p className="text-xs text-[#6B7280] dark:text-gray-400">
+          {t.auth.welcomeBackDesc}
         </p>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 rounded-2xl border border-red-200 bg-red-50 p-3 text-xs text-red-600">
+        <div className="flex items-center gap-2 rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 p-3 text-xs text-red-600">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -63,8 +65,8 @@ export default function LoginPage() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <label className="text-xs font-bold text-[#1A1A2E]">
-            Колдонуучу аты (Логин)
+          <label className="text-xs font-bold text-[#1A1A2E] dark:text-gray-200">
+            {t.auth.username}
           </label>
           <div className="relative">
             <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -80,8 +82,8 @@ export default function LoginPage() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-bold text-[#1A1A2E]">
-            Сырсөз
+          <label className="text-xs font-bold text-[#1A1A2E] dark:text-gray-200">
+            {t.auth.password}
           </label>
           <div className="relative">
             <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -103,14 +105,14 @@ export default function LoginPage() {
           isLoading={loading}
         >
           <LogIn className="h-4 w-4" />
-          <span>Кирүү</span>
+          <span>{t.auth.loginBtn}</span>
         </Button>
       </form>
 
-      <div className="text-center text-xs text-[#6B7280] border-t border-gray-100 pt-4">
-        <span>Аккаунтуңуз жокпу? </span>
+      <div className="text-center text-xs text-[#6B7280] dark:text-gray-400 border-t border-gray-100 dark:border-gray-800 pt-4">
+        <span>{t.auth.noAccount} </span>
         <Link href="/register" className="font-bold text-[#E84326] hover:underline">
-          Катталуу
+          {t.auth.registerLink}
         </Link>
       </div>
     </div>

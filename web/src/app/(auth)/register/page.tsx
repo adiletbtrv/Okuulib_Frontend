@@ -6,12 +6,14 @@ import { useRouter } from "next/navigation";
 import { UserPlus, Lock, Mail, User, AlertCircle } from "lucide-react";
 import { authApi } from "../../../lib/api";
 import { useAuthStore } from "../../../store/useAuthStore";
+import { useLanguageStore } from "../../../store/useLanguageStore";
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
 
 export default function RegisterPage() {
   const router = useRouter();
   const login = useAuthStore((s) => s.login);
+  const { t } = useLanguageStore();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -24,12 +26,12 @@ export default function RegisterPage() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setError("Сырсөздөр дал келген жок.");
+      setError(t.auth.passwordsDoNotMatch);
       return;
     }
 
     if (password.length < 6) {
-      setError("Сырсөз кеминде 6 символдон турушу керек.");
+      setError(t.auth.passwordMinLength);
       return;
     }
 
@@ -62,16 +64,16 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="rounded-3xl border border-gray-100 bg-white p-8 shadow-xl shadow-gray-200/50 space-y-6">
+    <div className="rounded-3xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-8 shadow-xl shadow-gray-200/50 dark:shadow-none space-y-6">
       <div className="text-center space-y-1">
-        <h1 className="text-2xl font-extrabold text-[#1A1A2E]">Жаңы каттоо</h1>
-        <p className="text-xs text-[#6B7280]">
-          Okuulib платформасына кошулуп, кыргыз адабиятын онлайн окуңуз
+        <h1 className="text-2xl font-extrabold text-[#1A1A2E] dark:text-white">{t.auth.newRegister}</h1>
+        <p className="text-xs text-[#6B7280] dark:text-gray-400">
+          {t.auth.newRegisterDesc}
         </p>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 rounded-2xl border border-red-200 bg-red-50 p-3 text-xs text-red-600">
+        <div className="flex items-center gap-2 rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 p-3 text-xs text-red-600">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -79,8 +81,8 @@ export default function RegisterPage() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <label className="text-xs font-bold text-[#1A1A2E]">
-            Колдонуучу аты (Логин)
+          <label className="text-xs font-bold text-[#1A1A2E] dark:text-gray-200">
+            {t.auth.username}
           </label>
           <div className="relative">
             <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -96,8 +98,8 @@ export default function RegisterPage() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-bold text-[#1A1A2E]">
-            Электрондук почта (Email)
+          <label className="text-xs font-bold text-[#1A1A2E] dark:text-gray-200">
+            {t.auth.email}
           </label>
           <div className="relative">
             <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -113,8 +115,8 @@ export default function RegisterPage() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-bold text-[#1A1A2E]">
-            Сырсөз
+          <label className="text-xs font-bold text-[#1A1A2E] dark:text-gray-200">
+            {t.auth.password}
           </label>
           <div className="relative">
             <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -130,8 +132,8 @@ export default function RegisterPage() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-bold text-[#1A1A2E]">
-            Сырсөздү кайталаңыз
+          <label className="text-xs font-bold text-[#1A1A2E] dark:text-gray-200">
+            {t.auth.confirmPassword}
           </label>
           <div className="relative">
             <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -153,14 +155,14 @@ export default function RegisterPage() {
           isLoading={loading}
         >
           <UserPlus className="h-4 w-4" />
-          <span>Катталуу</span>
+          <span>{t.auth.registerBtn}</span>
         </Button>
       </form>
 
-      <div className="text-center text-xs text-[#6B7280] border-t border-gray-100 pt-4">
-        <span>Аккаунтуңуз барбы? </span>
+      <div className="text-center text-xs text-[#6B7280] dark:text-gray-400 border-t border-gray-100 dark:border-gray-800 pt-4">
+        <span>{t.auth.haveAccount} </span>
         <Link href="/login" className="font-bold text-[#E84326] hover:underline">
-          Кирүү
+          {t.auth.loginLink}
         </Link>
       </div>
     </div>
