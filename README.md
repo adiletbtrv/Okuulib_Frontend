@@ -26,19 +26,19 @@
 <div align="center">
   <table border="0">
     <tr>
-      <td align="center"><img src="https://github.com/user-attachments/assets/8109f3c0-8c41-43b0-b33f-ddd0a21acb38" width="240" alt="Home Feed & Collections" /><br /><sub><b>Home Feed & Curated Collections</b></sub></td>
-      <td align="center"><img src="https://github.com/user-attachments/assets/e962cfa1-fd4f-4dd0-a4b1-24ef61be16ae" width="240" alt="Genre Browser & Filter" /><br /><sub><b>Genre Exploration & Filters</b></sub></td>
-      <td align="center"><img src="https://github.com/user-attachments/assets/a8731879-6d04-4e0e-b22b-dd961c379ccb" width="240" alt="Book Overview & Metadata" /><br /><sub><b>Work Details & Chapter Index</b></sub></td>
+      <td align="center"><img src="https://github.com/user-attachments/assets/8109f3c0-8c41-43b0-b33f-ddd0a21acb38" width="240" alt="Home Feed & Curated Collections" /><br /><sub><b>Home Feed & Curated Collections</b></sub></td>
+      <td align="center"><img src="https://github.com/user-attachments/assets/e962cfa1-fd4f-4dd0-a4b1-24ef61be16ae" width="240" alt="Book Overview & Chapter Index" /><br /><sub><b>Book Overview & Chapter Index</b></sub></td>
+      <td align="center"><img src="https://github.com/user-attachments/assets/a8731879-6d04-4e0e-b22b-dd961c379ccb" width="240" alt="Library & Genre Exploration" /><br /><sub><b>Library & Genre Exploration</b></sub></td>
     </tr>
     <tr>
-      <td align="center"><img src="https://github.com/user-attachments/assets/d8ff7c6b-cfc7-4d19-b6ee-555fd170c732" width="240" alt="Reader Engine Light Mode" /><br /><sub><b>Reader Engine (Distraction-Free)</b></sub></td>
-      <td align="center"><img src="https://github.com/user-attachments/assets/35970c90-cfce-4d47-829a-5c0ae413a33f" width="240" alt="Aitu AI Assistant Chat" /><br /><sub><b>Aitu AI Real-Time Assistant</b></sub></td>
-      <td align="center"><img src="https://github.com/user-attachments/assets/7b2eb30f-853c-44dc-8525-f2fe14d2a9ba" width="240" alt="Aitu Chat Sessions Drawer" /><br /><sub><b>Chat Sessions Drawer</b></sub></td>
+      <td align="center"><img src="https://github.com/user-attachments/assets/d8ff7c6b-cfc7-4d19-b6ee-555fd170c732" width="240" alt="Aitu AI Assistant Interface" /><br /><sub><b>Aitu AI Assistant Interface</b></sub></td>
+      <td align="center"><img src="https://github.com/user-attachments/assets/35970c90-cfce-4d47-829a-5c0ae413a33f" width="240" alt="Notification Center" /><br /><sub><b>Notification Center</b></sub></td>
+      <td align="center"><img src="https://github.com/user-attachments/assets/7b2eb30f-853c-44dc-8525-f2fe14d2a9ba" width="240" alt="Saved Bookmarks & Auth Guard" /><br /><sub><b>Saved Bookmarks & Auth Guard</b></sub></td>
     </tr>
     <tr>
-      <td align="center"><img src="https://github.com/user-attachments/assets/449edcd2-ab8b-4365-80dd-d48499f4e2f9" width="240" alt="User Profile & Banner Customization" /><br /><sub><b>User Profile & Custom Header</b></sub></td>
-      <td align="center"><img src="https://github.com/user-attachments/assets/debe84eb-46a9-4354-a983-2a520f965b9e" width="240" alt="Profile Settings & Reader Dark Mode" /><br /><sub><b>Settings & Dark Mode Toggle</b></sub></td>
-      <td align="center"><img src="https://github.com/user-attachments/assets/144a1278-8853-40df-85c3-71ba93ef8211" width="240" alt="Saved Bookmarks Collection" /><br /><sub><b>Bookmarks & Reading Queue</b></sub></td>
+      <td align="center"><img src="https://github.com/user-attachments/assets/449edcd2-ab8b-4365-80dd-d48499f4e2f9" width="240" alt="Distraction-Free Reader (Dark Mode)" /><br /><sub><b>Distraction-Free Reader (Dark Mode)</b></sub></td>
+      <td align="center"><img src="https://github.com/user-attachments/assets/debe84eb-46a9-4354-a983-2a520f965b9e" width="240" alt="User Profile & Customization" /><br /><sub><b>User Profile & Customization</b></sub></td>
+      <td align="center"><img src="https://github.com/user-attachments/assets/144a1278-8853-40df-85c3-71ba93ef8211" width="240" alt="Authentication & Login Screen" /><br /><sub><b>Authentication & Login Screen</b></sub></td>
     </tr>
   </table>
 </div>
