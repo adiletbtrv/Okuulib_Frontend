@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, MessageSquare, Trash2 } from "lucide-react";
+import { Plus, MessageSquare } from "lucide-react";
 import { ChatSessionDTO } from "../../types";
 import { formatDate } from "../../lib/utils";
 
